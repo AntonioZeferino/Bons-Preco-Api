@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Parceiroprod;
 use App\Models\Produto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,11 +13,155 @@ class ProdutoController extends Controller
 
     public function indexList()
     {
-        $produto = Produto::select( 'produto.*','parceiros.name as cidade',
-        'cidades.id as cidade_id','users.name as user_name','users.contacto as user_contacto','users.img as user_img', 'users.status as user_status')
-        ->join('produtos', 'produtos.id', '=', 'parceiro_produt.id_produto')
-        ->join('parceiros', 'parceiros.id', '=', 'parceiro_produt.id_parceiro')
-        ->get();
+        $produto = Produto::select(
+            'produtos.id AS produto_id',
+            'produtos.nome AS produto_nome',
+            'produtos.img AS produto_img',
+            'produtos.id AS total'
+        )
+            ->join('parceiro_produt', 'parceiro_produt.id_produto', '=', 'produtos.id')
+            ->GroupBy('produtos.id')
+            ->OrderBy('produto_id', 'DESC')
+            ->get();
+
+        $parceiro_produt = Parceiroprod::all();
+
+        $saida = null;
+
+        foreach ($produto as $key1 => $prod) {
+            $valor = null;
+            foreach ($parceiro_produt as $key2 => $prodParcei) {
+                if ($prod->produto_id == $prodParcei->id_produto) {
+                    $valor++;
+                }
+            }
+            $saida[] = [
+                'id' => $prod->produto_id,
+                'nome' => $prod->produto_nome,
+                'img' => $prod->produto_img,
+                'total' => $valor,
+            ];
+        }
+
+        return response()->json(
+            $saida
+        );
+    }
+
+    public function indexListPesquisa(Request $request)
+    {
+        $produto = Produto::select(
+            'produtos.id AS produto_id',
+            'produtos.nome AS produto_nome',
+            'produtos.img AS produto_img',
+            'produtos.id AS total'
+        )
+            ->join('parceiro_produt', 'parceiro_produt.id_produto', '=', 'produtos.id')
+            ->where('produtos.nome', 'LIKE', '%' . $request['pesquis'] . '%')
+            ->GroupBy('produtos.id')
+            ->OrderBy('produto_id', 'DESC')
+            ->get();
+
+        $parceiro_produt = Parceiroprod::all();
+
+        $saida = null;
+
+        foreach ($produto as $key1 => $prod) {
+            $valor = null;
+            foreach ($parceiro_produt as $key2 => $prodParcei) {
+                if ($prod->produto_id == $prodParcei->id_produto) {
+                    $valor++;
+                }
+            }
+            $saida[] = [
+                'id' => $prod->produto_id,
+                'nome' => $prod->produto_nome,
+                'img' => $prod->produto_img,
+                'total' => $valor,
+            ];
+        }
+
+        return response()->json(
+            $saida
+        );
+    }
+
+    public function lojasLigadasProduto()
+    {
+        $produto = Produto::select(
+            'produtos.id AS produto_id',
+            'parceiros.id AS parceiro_id',
+            'parceiros.nome AS parceiro_nome',
+            'parceiro_produt.preco AS preco',
+            'parceiro_produt.data_validad AS data_validad',
+            'parceiro_produt.estado_stok AS estado_stok',
+        )
+            ->join('parceiro_produt', 'parceiro_produt.id_produto', '=', 'produtos.id')
+            ->join('parceiros', 'parceiros.id', '=', 'parceiro_produt.id_parceiro')
+            ->get();
+
+
+        return response()->json(
+            $produto
+        );
+    }
+
+    public function produtoLojas(Request $request)
+    {
+        $produto = Produto::select(
+            'produtos.id AS produto_id',
+            'parceiro_produt.id_parceiro AS parceiro_id',
+            'parceiro_produt.id AS parceiro_produt_id',
+            'parceiros.nome AS parceiro_nome',
+            'parceiros.endereco AS parceiro_endereco',
+            'parceiro_produt.preco AS preco',
+            'parceiro_produt.data_validad AS data_validad',
+            'parceiro_produt.estado_stok AS estado_stok'
+        )
+            ->join('parceiro_produt', 'parceiro_produt.id_produto', '=', 'produtos.id')
+            ->join('parceiros', 'parceiros.id', '=', 'parceiro_produt.id_parceiro')
+            ->where('produtos.id', $request['id'])
+            //->GroupBy('produtos.id')
+            ->OrderBy('produto_id', 'DESC')
+            ->get();
+
+        return response()->json(
+            $produto
+        );
+    }
+
+    public function produtoDaLoja(Request $request)
+    {
+        $produto = Produto::select(
+            'produtos.id AS produto_id',
+            'parceiro_produt.id_parceiro AS parceiro_id',
+            'produtos.nome AS produto_nome',
+            'produtos.img AS produto_img',
+            'parceiro_produt.preco AS preco',
+            'parceiro_produt.data_validad AS data_validad',
+            'parceiro_produt.estado_stok AS estado_stok'
+        )
+            ->join('parceiro_produt', 'parceiro_produt.id_produto', '=', 'produtos.id')
+            ->where('parceiro_produt.id_parceiro', $request['id'])
+            //->GroupBy('produtos.id')
+            ->OrderBy('produto_id', 'DESC')
+            ->get();
+
+        return response()->json(
+            $produto
+        );
+    }
+
+    public function produtoSoSistema(Request $request)
+    {
+        $produto = Produto::select(
+            'produtos.id AS produto_id',
+            'produtos.nome AS produto_nome',
+            'produtos.img AS produto_img',
+
+        )
+            ->OrderBy('produto_id', 'ASC')
+            ->get();
 
         return response()->json(
             $produto
@@ -72,7 +217,7 @@ class ProdutoController extends Controller
      */
     public function show($id)
     {
-        return response()->json(Produto::find());
+        return response()->json(Produto::find($id));
     }
 
     /**

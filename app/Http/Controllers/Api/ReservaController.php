@@ -8,6 +8,32 @@ use Illuminate\Http\Request;
 
 class ReservaController extends Controller
 {
+
+    public function userReserva(Request $request)
+    {
+        $reserva = Reserva::select(
+            'reservas.id AS id_reservas',
+            'reservas.id_produto AS id_produto',
+            'reservas.id_parceiro AS id_parceiro',
+            'reservas.id_user AS id_user',
+            'reservas.estado AS estado',
+
+            'produtos.nome AS produto_nome',
+            'produtos.img AS produto_img',
+            'parceiros.nome AS parceiro_nome',
+            //'parceiro_produt.preco AS preco',
+        )
+            ->join('produtos', 'produtos.id', '=', 'reservas.id_produto')
+            ->join('parceiros', 'parceiros.id', '=', 'reservas.id_parceiro')
+            //->join('parceiro_produt', 'parceiro_produt.id_produto', '=', 'produtos.id')
+            ->where('reservas.id_user', $request['idUser'])
+            ->get();
+
+        return response()->json(
+            $reserva
+        );
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -61,12 +87,20 @@ class ReservaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $reserva = Reserva::find($id);
-        $reserva->update($request->all());
+        $reserva = Reserva::find($request->id);
 
-        return $reserva;
+        if ($reserva->update($request->all())) {
+            return response()->json([
+                'status' => true,
+            ]);
+        } else {
+
+            return response()->json([
+                'status' => false,
+            ]);
+        }
     }
 
     /**
@@ -79,7 +113,7 @@ class ReservaController extends Controller
     {
         if (Reserva::destroy($id)) {
             return response()->json(['status' => true]);
-        }else{
+        } else {
             return response()->json(['status' => false]);
         }
     }

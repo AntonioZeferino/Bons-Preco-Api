@@ -14,7 +14,7 @@ class FileUploadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function parceiroUpload(Request $request)
+    public function userUpload(Request $request)
     {
         $upload = $request->file->store('public/imgParceiro/');
         if ($upload) {

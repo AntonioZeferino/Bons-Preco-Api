@@ -15,6 +15,7 @@ class CreateParceirosTable extends Migration
     {
         Schema::create('parceiros', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('dono_id_user')->unsigned()->references('id')->on('users');
             $table->string('nome');
             $table->string('img');
             $table->string('horario');

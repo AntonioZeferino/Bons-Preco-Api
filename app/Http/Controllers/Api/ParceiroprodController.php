@@ -15,14 +15,66 @@ class ParceiroprodController extends Controller
      */
     public function index()
     {
-        $parceiroprod = Parceiroprod::select( 'parceiro_produt.*','parceiros.name as parceiro_name',
-        'parceiros.img as parceiro_img','users.name as user_name','users.contacto as user_contacto','users.img as user_img', 'users.status as user_status')
-        ->join('produtos', 'produtos.id', '=', 'parceiro_produt.id_produto')
-        ->join('parceiros', 'parceiros.id', '=', 'parceiro_produt.id_parceiro')
-        ->get();
+        $parceiroprod = Parceiroprod::select(
+            'parceiro_produt.*',
+            'parceiros.nome as parceiro_nome',
+            'parceiros.img as parceiro_img',
+            'parceiros.horario as parceiro_horario',
+            'parceiros.entregas as parceiro_entregas',
+            'parceiros.endereco as parceiro_endereco',
+            'parceiros.contacto as parceiro_contacto',
+            'parceiros.email as parceiro_email'
+        )
+            ->join('parceiros', 'parceiros.id', '=', 'parceiro_produt.id_parceiro')
+            ->get();
 
         return response()->json(
             $parceiroprod
+        );
+    }
+
+    public function indexProdutoID(Request $request)
+    {
+        $parceiroprod = Parceiroprod::select(
+            'parceiro_produt.*',
+            'parceiros.nome as parceiro_nome',
+            'parceiros.img as parceiro_img',
+            'parceiros.horario as parceiro_horario',
+            'parceiros.entregas as parceiro_entregas',
+            'parceiros.endereco as parceiro_endereco',
+            'parceiros.contacto as parceiro_contacto',
+            'parceiros.email as parceiro_email'
+        )
+            ->join('parceiros', 'parceiros.id', '=', 'parceiro_produt.id_parceiro')
+            ->where('parceiro_produt.id_produto', $request['id'])
+            ->get();
+
+        return response()->json(
+            $parceiroprod
+        );
+    }
+
+    public function lojaReserva(Request $request)
+    {
+        $parceiroprod = Parceiroprod::select(
+            'produtos.id AS id_produto',
+            'parceiros.id AS id_parceiro',
+
+            'produtos.nome AS produto_nome',
+            'produtos.img AS produto_img',
+            'parceiro_produt.preco AS preco',
+            'parceiro_produt.data_validad AS data_validad',
+            'parceiro_produt.estado_stok AS estado_stok'
+        )
+            ->join('produtos', 'parceiro_produt.id_produto', '=', 'produtos.id')
+            ->join('parceiros', 'parceiro_produt.id_parceiro', '=', 'parceiros.id')
+            ->where('parceiro_produt.id_parceiro', $request['idpar'])
+            //->where('parceiro_produt.id_produto', $request['idpro'])
+            ->get();
+
+        return response()->json(
+            $parceiroprod
+
         );
     }
 
@@ -41,6 +93,12 @@ class ParceiroprodController extends Controller
             'data_validad' => 'required',
             'estado_stok' => 'required',
         ]);
+
+        if (Parceiroprod::create($request->all())) {
+            return response()->json(['status' => true]);
+        } else {
+            return response()->json(['status' => false]);
+        }
     }
 
     /**

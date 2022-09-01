@@ -42,7 +42,7 @@ Route::delete('produto/{id}', [ProdutoController::class, 'destroy'])->middleware
 
 Route::post('parceiprodut', [ParceiroprodController::class, 'index']);
 Route::post('parceiprodutID', [ParceiroprodController::class, 'indexProdutoID']);
-Route::post('lojaReserva', [ParceiroprodController::class, 'lojaReserva']);
+Route::post('produtDoParceiro', [ParceiroprodController::class, 'produtDoParceiro']);
 Route::post('parceiprodutStore', [ParceiroprodController::class, 'store'])->middleware();
 Route::post('parceiprodutShow', [ParceiroprodController::class, 'show'])->middleware();
 Route::post('parceiprodutUpdate', [ParceiroprodController::class, 'update'])->middleware();
@@ -57,6 +57,7 @@ Route::delete('parceiro/{id}', [ParceiroController::class, 'destroy'])->middlewa
 
 Route::post('reserva', [ReservaController::class, 'index']);
 Route::post('userReserva', [ReservaController::class, 'userReserva']);
+Route::post('lojaReserva', [ReservaController::class, 'lojaReserva']);
 Route::post('reservaStore', [ReservaController::class, 'store'])->middleware();
 Route::post('reservaShow', [ReservaController::class, 'show'])->middleware();
 Route::post('reservaUpdate', [ReservaController::class, 'update'])->middleware();

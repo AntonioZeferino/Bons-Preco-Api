@@ -54,7 +54,7 @@ class ParceiroprodController extends Controller
         );
     }
 
-    public function lojaReserva(Request $request)
+    public function produtDoParceiro(Request $request)
     {
         $parceiroprod = Parceiroprod::select(
             'produtos.id AS id_produto',

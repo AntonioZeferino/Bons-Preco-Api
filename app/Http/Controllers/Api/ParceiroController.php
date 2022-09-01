@@ -58,7 +58,6 @@ class ParceiroController extends Controller
         $request->validate([
             'nome' => 'required',
             'dono_id_user' => 'required',
-            'img' => 'required',
             'endereco' => 'required',
             'contacto' => 'required',
             'email' => 'required',

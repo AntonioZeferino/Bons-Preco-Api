@@ -186,10 +186,10 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->file != null) {
-            $upload = $request->file->store('public/imgProduto/');
+        if ($request->file1 != null) {
+            $upload = $request->file1->store('public/imgProduto/');
             if ($upload) {
-                $request['img'] = $request->file->hashName();
+                $request['img'] = $request->file1->hashName();
             }
         }
 

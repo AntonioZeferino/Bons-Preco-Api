@@ -34,6 +34,36 @@ class ReservaController extends Controller
         );
     }
 
+    public function lojaReserva(Request $request)
+    {
+        $parceiroprod = Reserva::select(
+            'reservas.id AS id_reservas',
+            'reservas.id_user AS id_user',
+            'reservas.estado AS estado',
+            'users.nome AS user_nome',
+            'produtos.id AS id_produto',
+            'parceiros.id AS id_parceiro',
+
+            'produtos.nome AS produto_nome',
+            'produtos.img AS produto_img',
+            'parceiro_produt.preco AS preco',
+            'parceiro_produt.data_validad AS data_validad',
+            'parceiro_produt.estado_stok AS estado_stok'
+        )
+            ->join('produtos', 'reservas.id_produto', '=', 'produtos.id')
+            ->join('parceiros', 'reservas.id_parceiro', '=', 'parceiros.id')
+            ->join('users', 'reservas.id_user', '=', 'users.id')
+            ->join('parceiro_produt', 'produtos.id', '=', 'parceiro_produt.id_produto')
+            ->where('reservas.id_parceiro', $request['idpar'])
+            ->where('parceiro_produt.id_parceiro', $request['idpar'])
+            ->get();
+
+        return response()->json(
+            $parceiroprod
+
+        );
+    }
+
     /**
      * Display a listing of the resource.
      *

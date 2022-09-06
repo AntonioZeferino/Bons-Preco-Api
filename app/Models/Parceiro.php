@@ -8,6 +8,7 @@ class Parceiro extends Model
 {
     protected $table = 'parceiros';
     protected $fillable = [
+        'dono_id_user',
         'nome',
         'img',
         'horario',

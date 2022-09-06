@@ -48,10 +48,10 @@ class ParceiroController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->file != null) {
-            $upload = $request->file->store('public/imgParceiro/');
+        if ($request->file2 != null) {
+            $upload = $request->file2->store('public/imgParceiro/');
             if ($upload) {
-                $request['img'] = $request->file->hashName();
+                $request['img'] = $request->file2->hashName();
             }
         }
 
@@ -89,9 +89,9 @@ class ParceiroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $parceiro = Parceiro::find($id);
+        $parceiro = Parceiro::find($request['id']);
         $parceiro->update($request->all());
 
         return $parceiro;

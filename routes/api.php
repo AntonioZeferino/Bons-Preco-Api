@@ -35,6 +35,7 @@ Route::post('produtoDaLoja', [ProdutoController::class, 'produtoDaLoja']);
 Route::post('produtoLojas', [ProdutoController::class, 'produtoLojas']);
 Route::post('lojasLigadasProduto', [ProdutoController::class, 'lojasLigadasProduto']);
 Route::post('produtoSoSistema', [ProdutoController::class, 'produtoSoSistema']);
+Route::post('produtoSoSistemaID', [ProdutoController::class, 'produtoSoSistemaID']);
 Route::post('produtoStore', [ProdutoController::class, 'store'])->middleware();
 Route::post('produtoShow', [ProdutoController::class, 'show'])->middleware();
 Route::post('produtoUpdate', [ProdutoController::class, 'update'])->middleware();

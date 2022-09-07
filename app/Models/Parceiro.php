@@ -16,7 +16,6 @@ class Parceiro extends Model
         'endereco',
         'contacto',
         'email',
-        'password',
     ];
 
     public function parceiroprod()

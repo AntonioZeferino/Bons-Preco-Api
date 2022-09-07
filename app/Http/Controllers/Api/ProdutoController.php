@@ -168,6 +168,23 @@ class ProdutoController extends Controller
         );
     }
 
+    public function produtoSoSistemaID(Request $request)
+    {
+        $produto = Produto::select(
+            'produtos.id AS produto_id',
+            'produtos.nome AS produto_nome',
+            'produtos.img AS produto_img',
+
+        )
+            ->where('produtos.id', $request['id'])
+            ->OrderBy('produto_id', 'ASC')
+            ->get();
+
+        return response()->json(
+            $produto
+        );
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -227,9 +244,10 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $produto = Produto::find();
+   
+        $produto = Produto::find($request['id']);
 
         if ($request->file != null) {
             $upload = $request->file->store('public/imgProduto/');
